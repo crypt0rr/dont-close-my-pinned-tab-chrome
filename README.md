@@ -25,6 +25,8 @@ history, or JavaScript memory.
 - Pinned tabs are not restored when their whole browser window is closing.
 - Restored tabs are created inactive. By default, they restore at the site's base
   URL and are discarded when Chrome allows it, so they reload when selected.
+- Closing the active pinned tab opens a blank active tab when Chrome would
+  otherwise fall back to another pinned tab.
 - The current visible URL is tracked for normal navigations, History API route
   changes, and hash changes, then normalized to the site base URL when restored.
 - Internal or restricted URLs may not restore if Chrome refuses to create them
@@ -64,6 +66,8 @@ node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
 - Test base URL restore with `https://example.com/path?x=1#hash`.
 - Test exact URL restore from the options page.
 - Test restored-tab unload on and off from the options page.
+- Close the active pinned tab while another pinned tab exists and confirm a
+  blank tab opens instead of loading the other pinned tab.
 - Test with more than one browser window.
 
 ## Store publishing
