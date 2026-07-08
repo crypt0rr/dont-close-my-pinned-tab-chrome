@@ -32,19 +32,6 @@ function getSnapshotUrl(tab, previousUrl) {
   return previousUrl || tab.url || tab.pendingUrl;
 }
 
-function getBaseRestoreUrl(url) {
-  try {
-    const parsedUrl = new URL(url);
-    if (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") {
-      return `${parsedUrl.origin}/`;
-    }
-  } catch (error) {
-    return url;
-  }
-
-  return url;
-}
-
 async function loadPinnedTabs() {
   const stored = await chrome.storage.session.get(STORAGE_KEY);
   pinnedTabs.clear();
@@ -122,51 +109,17 @@ async function getPinnedIndex(snapshot) {
   }
 }
 
-async function waitForCompletedNavigation(tabId) {
+function getBaseRestoreUrl(url) {
   try {
-    const tab = await chrome.tabs.get(tabId);
-    if (hasCompletedNavigation(tab)) {
-      return tab;
+    const parsedUrl = new URL(url);
+    if (parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:") {
+      return `${parsedUrl.origin}/`;
     }
   } catch (error) {
-    return undefined;
+    return url;
   }
 
-  return new Promise((resolve) => {
-    const timeoutId = setTimeout(() => {
-      cleanup();
-      chrome.tabs.get(tabId)
-        .then(resolve)
-        .catch(() => resolve(undefined));
-    }, RESTORED_TAB_NAVIGATION_TIMEOUT_MS);
-
-    function cleanup() {
-      clearTimeout(timeoutId);
-      chrome.tabs.onUpdated.removeListener(handleUpdated);
-      chrome.tabs.onRemoved.removeListener(handleRemoved);
-    }
-
-    function handleUpdated(updatedTabId, changeInfo, tab) {
-      if (updatedTabId !== tabId || !hasCompletedNavigation(tab)) {
-        return;
-      }
-
-      cleanup();
-      resolve(tab);
-    }
-
-    function handleRemoved(removedTabId) {
-      if (removedTabId !== tabId) {
-        return;
-      }
-
-      cleanup();
-      resolve(undefined);
-    }
-
-    chrome.tabs.onUpdated.addListener(handleUpdated);
-    chrome.tabs.onRemoved.addListener(handleRemoved);
-  });
+  return url;
 }
 
 async function restorePinnedTab(snapshot) {
@@ -229,6 +182,53 @@ async function updateSnapshotPosition(tabId, windowId, index) {
   snapshot.index = index;
   snapshot.windowId = windowId;
   await savePinnedTabs();
+}
+
+async function waitForCompletedNavigation(tabId) {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    if (hasCompletedNavigation(tab)) {
+      return tab;
+    }
+  } catch (error) {
+    return undefined;
+  }
+
+  return new Promise((resolve) => {
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      chrome.tabs.get(tabId)
+        .then(resolve)
+        .catch(() => resolve(undefined));
+    }, RESTORED_TAB_NAVIGATION_TIMEOUT_MS);
+
+    function cleanup() {
+      clearTimeout(timeoutId);
+      chrome.tabs.onUpdated.removeListener(handleUpdated);
+      chrome.tabs.onRemoved.removeListener(handleRemoved);
+    }
+
+    function handleUpdated(updatedTabId, changeInfo, tab) {
+      if (updatedTabId !== tabId || !hasCompletedNavigation(tab)) {
+        return;
+      }
+
+      cleanup();
+      resolve(tab);
+    }
+
+    function handleRemoved(removedTabId) {
+      if (removedTabId !== tabId) {
+        return;
+      }
+
+      cleanup();
+      resolve(undefined);
+    }
+
+    chrome.tabs.onUpdated.addListener(handleUpdated);
+    chrome.tabs.onRemoved.addListener(handleRemoved);
+  });
 }
 
 async function rememberNavigationUrl(details) {
