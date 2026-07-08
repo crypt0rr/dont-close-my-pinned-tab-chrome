@@ -41,6 +41,8 @@ You can also click the extension toolbar icon to open options.
 - Unload restored tabs until selected: ask Chrome to discard restored tabs after
   they finish loading.
 - Restore URL: choose between the site base URL and the exact URL.
+- Site rules: override the global restore settings for a specific origin, such
+  as `https://example.com` or `http://localhost:3000`.
 
 ## Permissions
 
@@ -66,6 +68,10 @@ node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
 - Test base URL restore with `https://example.com/path?x=1#hash`.
 - Test exact URL restore from the options page.
 - Test restored-tab unload on and off from the options page.
+- Add a site rule for `https://example.com/path` and confirm it stores as
+  `https://example.com`.
+- Confirm site rules can override restore enabled, restore URL mode, and unload
+  behavior.
 - Close the active pinned tab while another pinned tab exists and confirm a
   blank tab opens instead of loading the other pinned tab.
 - Test with more than one browser window.

@@ -1,27 +1,21 @@
-# Don't Close My Pinned Tab v0.3.1
+# Don't Close My Pinned Tab v0.4.0
 
 ## Added
 
-- Added an options page.
-- Added a toggle to enable or disable pinned tab restoration.
-- Added a toggle to unload restored tabs until selected.
-- Added restore URL mode:
-  - Site base URL
-  - Exact URL
-- Added extension icon assets and toolbar icon support.
-- Added privacy policy draft.
-- Added Chrome Web Store listing draft.
-- Added release QA checklist to the README.
-- Added a blank-tab fallback when closing the active pinned tab would otherwise
-  activate another pinned tab.
+- Added per-site restore rules.
+- Added origin-based rule matching for sites such as `https://example.com` and
+  `http://localhost:3000`.
+- Added options UI for adding and removing site rules.
+- Added per-site overrides for restore enabled, restore URL mode, and unload
+  restored tabs.
 
 ## Changed
 
-- Bumped extension version to `0.3.1`.
-- Restored tabs now follow the configured restore behavior.
-- Clicking the toolbar icon opens the options page.
-- Documentation now covers options, permissions, privacy, store publishing, and manual release checks.
+- Bumped extension version to `0.4.0`.
+- Global options now act as defaults when no site rule matches.
+- Documentation now covers per-site rules and release checks for rule behavior.
 
 ## Notes
 
-Chrome does not allow extensions to cancel reserved browser shortcuts before Chrome handles them, so pinned tabs may briefly disappear before being restored.
+Site rules match URL origins only. A rule for `https://example.com` does not
+match `https://sub.example.com` or `https://example.com:8443`.
