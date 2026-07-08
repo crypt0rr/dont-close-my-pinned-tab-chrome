@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Don't Close My Pinned Tab",
   "description": "Restores pinned tabs when they are closed, keeping them visible but unloaded until selected.",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
