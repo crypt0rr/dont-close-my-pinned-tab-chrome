@@ -33,6 +33,7 @@ history, or JavaScript memory.
 ## Options
 
 Open the extension options from `chrome://extensions`.
+You can also click the extension toolbar icon to open options.
 
 - Restore closed pinned tabs: turn protection on or off.
 - Unload restored tabs until selected: ask Chrome to discard restored tabs after
