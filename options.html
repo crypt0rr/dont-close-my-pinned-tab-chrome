@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Don't Close My Pinned Tab Options</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main>
+      <h1>Don't Close My Pinned Tab</h1>
+
+      <form>
+        <fieldset>
+          <legend>Restore behavior</legend>
+
+          <label>
+            <input type="checkbox" id="restoreEnabled">
+            Restore closed pinned tabs
+          </label>
+
+          <label>
+            <input type="checkbox" id="discardRestoredTabs">
+            Unload restored tabs until selected
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Restore URL</legend>
+
+          <label>
+            <input type="radio" name="restoreUrlMode" value="base">
+            Site base URL
+          </label>
+
+          <label>
+            <input type="radio" name="restoreUrlMode" value="exact">
+            Exact URL
+          </label>
+        </fieldset>
+      </form>
+
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>
