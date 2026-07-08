@@ -10,7 +10,7 @@
     <main>
       <h1>Don't Close My Pinned Tab</h1>
 
-      <form>
+      <form id="globalOptionsForm">
         <fieldset>
           <legend>Restore behavior</legend>
 
@@ -39,6 +39,39 @@
           </label>
         </fieldset>
       </form>
+
+      <section>
+        <h2>Site rules</h2>
+
+        <form id="siteRuleForm" novalidate>
+          <label>
+            Site URL
+            <input type="url" id="siteRuleOrigin" placeholder="https://example.com/path">
+          </label>
+
+          <label>
+            <input type="checkbox" id="siteRuleRestoreEnabled" checked>
+            Restore closed pinned tabs
+          </label>
+
+          <label>
+            Restore URL
+            <select id="siteRuleRestoreUrlMode">
+              <option value="base">Site base URL</option>
+              <option value="exact">Exact URL</option>
+            </select>
+          </label>
+
+          <label>
+            <input type="checkbox" id="siteRuleDiscardRestoredTabs" checked>
+            Unload restored tabs until selected
+          </label>
+
+          <button type="submit">Add rule</button>
+        </form>
+
+        <div id="siteRules"></div>
+      </section>
 
       <p id="status" role="status" aria-live="polite"></p>
     </main>
