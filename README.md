@@ -1,0 +1,1 @@
+# dont-close-my-pinned-tab-chrome
