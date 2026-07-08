@@ -7,7 +7,7 @@ The extension stores a small amount of local browser state so it can restore
 closed pinned tabs:
 
 - pinned tab IDs, window IDs, tab positions, and URLs in `chrome.storage.session`
-- user preferences in `chrome.storage.sync`
+- user preferences and per-site rule origins in `chrome.storage.sync`
 
 This data is used only by the extension. It is not sent to any external server.
 

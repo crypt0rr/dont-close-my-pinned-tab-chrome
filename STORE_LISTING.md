@@ -16,7 +16,8 @@ asks Chrome to unload them until selected.
 
 By default, restored tabs reopen at the site's base URL, such as
 `https://example.com/`. You can change this in the extension options and restore
-the exact URL instead.
+the exact URL instead. You can also add per-site rules when a specific web app
+needs different restore behavior.
 
 ## Key Features
 
@@ -25,6 +26,7 @@ the exact URL instead.
 - Skips restoration when an entire browser window is closing.
 - Supports base URL or exact URL restore.
 - Can unload restored tabs until selected.
+- Supports per-site restore rules by origin.
 - Stores settings in Chrome sync storage.
 
 ## Privacy

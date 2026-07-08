@@ -6,7 +6,8 @@ const RESTORED_TAB_NAVIGATION_TIMEOUT_MS = 15000;
 const DEFAULT_OPTIONS = {
   restoreEnabled: true,
   restoreUrlMode: "base",
-  discardRestoredTabs: true
+  discardRestoredTabs: true,
+  siteRules: []
 };
 
 function snapshotKey(tabId) {
@@ -56,6 +57,36 @@ async function savePinnedTabs() {
 
 async function getOptions() {
   return chrome.storage.sync.get(DEFAULT_OPTIONS);
+}
+
+function getUrlOrigin(url) {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.origin;
+  } catch (error) {
+    return undefined;
+  }
+}
+
+async function getEffectiveOptionsForUrl(url) {
+  const options = await getOptions();
+  const origin = getUrlOrigin(url);
+
+  if (!origin || !Array.isArray(options.siteRules)) {
+    return options;
+  }
+
+  const siteRule = options.siteRules.find((rule) => rule.origin === origin);
+  if (!siteRule) {
+    return options;
+  }
+
+  return {
+    ...options,
+    restoreEnabled: siteRule.restoreEnabled,
+    restoreUrlMode: siteRule.restoreUrlMode,
+    discardRestoredTabs: siteRule.discardRestoredTabs
+  };
 }
 
 async function rememberPinnedTab(tab) {
@@ -140,7 +171,7 @@ async function restorePinnedTab(snapshot) {
     return;
   }
 
-  const options = await getOptions();
+  const options = await getEffectiveOptionsForUrl(snapshot.url);
   if (!options.restoreEnabled) {
     return;
   }
@@ -381,7 +412,7 @@ async function handleRemovedTab(tabId, removeInfo) {
     return;
   }
 
-  const options = await getOptions();
+  const options = await getEffectiveOptionsForUrl(snapshot.url);
   if (!options.restoreEnabled) {
     return;
   }

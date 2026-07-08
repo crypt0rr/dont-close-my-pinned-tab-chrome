@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-VERSION="0.3.1"
+VERSION="0.4.0"
 PACKAGE_NAME="dont-close-my-pinned-tab-chrome-v${VERSION}.zip"
 
 mkdir -p dist
