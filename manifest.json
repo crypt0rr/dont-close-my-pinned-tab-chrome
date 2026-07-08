@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Don't Close My Pinned Tab",
+  "description": "Restores pinned tabs when they are closed, keeping them visible but unloaded until selected.",
+  "version": "0.1.0",
+  "permissions": [
+    "storage",
+    "tabs",
+    "webNavigation"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
