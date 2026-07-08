@@ -313,6 +313,10 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
     .catch((error) => console.warn("Unable to handle removed tab.", error));
 });
 
+chrome.action.onClicked.addListener(() => {
+  chrome.runtime.openOptionsPage();
+});
+
 async function handleRemovedTab(tabId, removeInfo) {
   await loadPinnedTabs();
 

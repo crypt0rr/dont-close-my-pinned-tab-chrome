@@ -2,7 +2,13 @@
   "manifest_version": 3,
   "name": "Don't Close My Pinned Tab",
   "description": "Restores pinned tabs when they are closed, keeping them visible but unloaded until selected.",
-  "version": "0.2.0",
+  "version": "0.3.0",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
   "permissions": [
     "storage",
     "tabs",
@@ -10,6 +16,15 @@
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Don't Close My Pinned Tab",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   },
   "options_ui": {
     "page": "options.html",
