@@ -23,13 +23,21 @@ history, or JavaScript memory.
 - Pinned tabs are restored when closed.
 - Non-pinned tabs are not affected.
 - Pinned tabs are not restored when their whole browser window is closing.
-- Restored tabs are created inactive at the site's base URL. After Chrome commits
-  that URL, the extension discards the tab when Chrome allows it, so it reloads
-  when selected.
+- Restored tabs are created inactive. By default, they restore at the site's base
+  URL and are discarded when Chrome allows it, so they reload when selected.
 - The current visible URL is tracked for normal navigations, History API route
   changes, and hash changes, then normalized to the site base URL when restored.
 - Internal or restricted URLs may not restore if Chrome refuses to create them
   from an extension.
+
+## Options
+
+Open the extension options from `chrome://extensions`.
+
+- Restore closed pinned tabs: turn protection on or off.
+- Unload restored tabs until selected: ask Chrome to discard restored tabs after
+  they finish loading.
+- Restore URL: choose between the site base URL and the exact URL.
 
 ## Permissions
 
@@ -43,5 +51,21 @@ history, or JavaScript memory.
 
 ```sh
 node --check background.js
+node --check options.js
 node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
 ```
+
+## Release checklist
+
+- Close a pinned tab and confirm it restores.
+- Close a non-pinned tab and confirm it stays closed.
+- Close a window with pinned tabs and confirm they are not recreated.
+- Test base URL restore with `https://example.com/path?x=1#hash`.
+- Test exact URL restore from the options page.
+- Test restored-tab unload on and off from the options page.
+- Test with more than one browser window.
+
+## Store publishing
+
+- [Privacy policy](PRIVACY.md)
+- [Chrome Web Store listing draft](STORE_LISTING.md)

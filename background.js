@@ -3,6 +3,11 @@ const pinnedTabs = new Map();
 const isRestoring = new Set();
 const STORAGE_KEY = "pinnedTabs";
 const RESTORED_TAB_NAVIGATION_TIMEOUT_MS = 15000;
+const DEFAULT_OPTIONS = {
+  restoreEnabled: true,
+  restoreUrlMode: "base",
+  discardRestoredTabs: true
+};
 
 function snapshotKey(tabId) {
   return String(tabId);
@@ -47,6 +52,10 @@ async function savePinnedTabs() {
   await chrome.storage.session.set({
     [STORAGE_KEY]: Array.from(pinnedTabs.values())
   });
+}
+
+async function getOptions() {
+  return chrome.storage.sync.get(DEFAULT_OPTIONS);
 }
 
 async function rememberPinnedTab(tab) {
@@ -129,7 +138,14 @@ async function restorePinnedTab(snapshot) {
     return;
   }
 
-  const restoreUrl = getBaseRestoreUrl(snapshot.url);
+  const options = await getOptions();
+  if (!options.restoreEnabled) {
+    return;
+  }
+
+  const restoreUrl = options.restoreUrlMode === "exact"
+    ? snapshot.url
+    : getBaseRestoreUrl(snapshot.url);
   const restoreKey = `${snapshot.windowId}:${restoreUrl}`;
   if (isRestoring.has(restoreKey)) {
     return;
@@ -147,6 +163,11 @@ async function restorePinnedTab(snapshot) {
     });
 
     await rememberPinnedTab(restoredTab);
+
+    if (!options.discardRestoredTabs) {
+      return;
+    }
+
     const navigatedTab = await waitForCompletedNavigation(restoredTab.id);
 
     if (!navigatedTab || navigatedTab.active) {
