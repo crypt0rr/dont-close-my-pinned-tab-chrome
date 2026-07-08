@@ -1,4 +1,4 @@
-# Don't Close My Pinned Tab v0.3.0
+# Don't Close My Pinned Tab v0.3.1
 
 ## Added
 
@@ -12,10 +12,12 @@
 - Added privacy policy draft.
 - Added Chrome Web Store listing draft.
 - Added release QA checklist to the README.
+- Added a blank-tab fallback when closing the active pinned tab would otherwise
+  activate another pinned tab.
 
 ## Changed
 
-- Bumped extension version to `0.3.0`.
+- Bumped extension version to `0.3.1`.
 - Restored tabs now follow the configured restore behavior.
 - Clicking the toolbar icon opens the options page.
 - Documentation now covers options, permissions, privacy, store publishing, and manual release checks.
