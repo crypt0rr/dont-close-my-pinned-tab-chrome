@@ -32,9 +32,3 @@ the exact URL instead.
 The extension does not collect, sell, transmit, or share personal data. It stores
 tab restore state locally in the browser and stores user preferences through
 Chrome sync storage.
-
-## Suggested Screenshots
-
-- A browser window with pinned tabs.
-- The options page showing restore behavior and restore URL settings.
-- A pinned tab restored after being closed.
