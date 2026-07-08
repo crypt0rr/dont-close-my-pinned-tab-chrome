@@ -74,7 +74,8 @@ async function rememberPinnedTab(tab) {
     tabId: tab.id,
     windowId: tab.windowId,
     index: tab.index,
-    url: getSnapshotUrl(tab, previousSnapshot && previousSnapshot.url)
+    url: getSnapshotUrl(tab, previousSnapshot && previousSnapshot.url),
+    active: tab.active
   });
 
   await savePinnedTabs();
@@ -95,7 +96,8 @@ async function rebuildPinnedTabSnapshot() {
           tabId: tab.id,
           windowId: tab.windowId,
           index: tab.index,
-          url: getSnapshotUrl(tab)
+          url: getSnapshotUrl(tab),
+          active: tab.active
         });
       }
     }
@@ -205,6 +207,53 @@ async function updateSnapshotPosition(tabId, windowId, index) {
   await savePinnedTabs();
 }
 
+async function updateActivePinnedTab(activeInfo) {
+  await loadPinnedTabs();
+
+  for (const snapshot of pinnedTabs.values()) {
+    if (snapshot.windowId === activeInfo.windowId) {
+      snapshot.active = snapshot.tabId === activeInfo.tabId;
+    }
+  }
+
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId);
+    if (tab.pinned) {
+      await rememberPinnedTab(tab);
+      return;
+    }
+  } catch (error) {
+    console.debug("Unable to inspect activated tab.", error);
+  }
+
+  await savePinnedTabs();
+}
+
+async function maybeOpenBlankFallbackTab(snapshot, options) {
+  if (!snapshot.active || !options.restoreEnabled) {
+    return;
+  }
+
+  try {
+    const activeTabs = await chrome.tabs.query({
+      windowId: snapshot.windowId,
+      active: true
+    });
+    const activeTab = activeTabs[0];
+
+    if (!activeTab || !activeTab.pinned) {
+      return;
+    }
+
+    await chrome.tabs.create({
+      windowId: snapshot.windowId,
+      active: true
+    });
+  } catch (error) {
+    console.warn("Unable to open blank fallback tab.", error);
+  }
+}
+
 async function waitForCompletedNavigation(tabId) {
   try {
     const tab = await chrome.tabs.get(tabId);
@@ -293,6 +342,11 @@ chrome.tabs.onAttached.addListener((tabId, attachInfo) => {
     .catch((error) => console.warn("Unable to track attached tab.", error));
 });
 
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  updateActivePinnedTab(activeInfo)
+    .catch((error) => console.warn("Unable to track active tab.", error));
+});
+
 chrome.webNavigation.onCommitted.addListener((details) => {
   rememberNavigationUrl(details)
     .catch((error) => console.warn("Unable to track committed navigation.", error));
@@ -327,6 +381,12 @@ async function handleRemovedTab(tabId, removeInfo) {
     return;
   }
 
+  const options = await getOptions();
+  if (!options.restoreEnabled) {
+    return;
+  }
+
+  await maybeOpenBlankFallbackTab(snapshot, options);
   await restorePinnedTab(snapshot);
 }
 
